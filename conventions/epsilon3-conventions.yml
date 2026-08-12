@@ -1,0 +1,153 @@
+generated: '2026-08-12'
+method: searched
+source: https://docs.epsilon3.io/
+note: >-
+  Cross-cutting request/response semantics read from the published API Guide. Where a
+  convention is NOT published, it is recorded as absent rather than guessed - the
+  absences below (idempotency, request tracing, a uniform error envelope) are findings,
+  not gaps in this capture.
+api_style:
+  architecture: REST
+  statement: >-
+    "The Epsilon3 API is centered around REST principles, using standard HTTP response
+    codes, verbs, and authentication. All API endpoints use resource-oriented URLs and
+    JSON-encoded request and response bodies."
+  content_type: application/json
+  methods_used: [GET, POST, PUT, PATCH, DELETE]
+  patch_semantics: partial update (PATCH is the dominant update verb; PUT is used for
+    full-collection replacement such as work-order procedures and bulk upserts)
+authentication:
+  style: HTTP Basic, API key as username, empty password
+  detail: authentication/epsilon3-authentication.yml
+versioning:
+  scheme: uri-path
+  current: v1
+  also_present: v2
+  detail: >-
+    Most families live under /v1. Three surfaces have moved to /v2 - Roles (/v2/roles),
+    Runs V2 (/v2/runs/:runId) and Users (/v2/users/summary, /v2/projects/:projectId/users,
+    /v2/users/roles/add, /v2/users/roles/remove). The v1 and v2 forms coexist; Runs V2 is
+    documented as a distinct section alongside the v1 Runs API rather than replacing it.
+  header_versioning: false
+  date_versioning: false
+  detail_file: lifecycle/epsilon3-lifecycle.yml
+idempotency:
+  supported: false
+  header: null
+  note: >-
+    NO idempotency key, header or replay contract is documented anywhere in the API
+    Guide - the string "idempoten" does not appear in it. Repeated POSTs to creation
+    endpoints must be assumed to create duplicates. Where a caller needs safe retries the
+    only published affordances are natural-key conflict responses (creating a dictionary
+    or dictionary group whose name already exists returns 409) and the upsert-shaped
+    endpoints (PUT /v1/commands/bulk, PUT /v1/telemetry/parameters/bulk,
+    POST /v1/builds/product-catalog). This is a real gap for an operations API whose
+    clients run in intermittently-connected mission environments.
+pagination:
+  published_for: Search API only
+  style: opaque cursor
+  request:
+    page_size_param: limit
+    page_size_range: 1-1000
+    page_size_default: 100
+    cursor_param: page-token
+    cursor_location: query string
+  response:
+    envelope: pagination
+    fields:
+    - pagination.next_page_token
+    - pagination.limit
+    termination: next_page_token is null when there are no more results
+  opacity: >-
+    "Treat page-token as opaque. Do not parse or build it yourself."
+  activity_endpoints:
+    style: keyset / seek
+    params: [startBeforeId, startBeforeTimestamp]
+    note: >-
+      Per-resource activity feeds (work order, inventory item, purchase order, sale order,
+      outbound shipment, project-schedule event, tool instance) page backwards through a
+      startBeforeId or startBeforeTimestamp cursor rather than the Search page-token.
+  gap: >-
+    Collection list endpoints outside Search (for example GET /v1/builds/parts,
+    GET /v1/issues) do not document a pagination contract, so a caller cannot tell whether
+    a list response is complete.
+filtering:
+  repeated_params: >-
+    Multi-value filters are expressed by repeating the parameter rather than
+    comma-joining, for example ?linked-run-id=run_123&linked-run-id=run_456 and
+    ?type=Assembly&type=Service.
+  custom_field_filters: >-
+    Parts, procedure summaries and run summaries each document a custom-field filter
+    syntax so callers can query on workspace-defined fields.
+  param_casing: >-
+    Inconsistent. Query parameters mix kebab-case (linked-run-id, dictionary-group-ids,
+    page-token), snake_case (customer_id, sale_order_id, dictionary_id, resource_type)
+    and camelCase (revisionId, startBeforeId, startBeforeTimestamp, deleteSeries) across
+    families. Path parameters mix :colon and {brace} forms in the docs.
+  body_casing: snake_case throughout JSON request and response bodies
+field_expansion:
+  supported: false
+  note: no expand / fields / sparse-fieldset parameter is documented
+metadata:
+  supported: true
+  detail: >-
+    Runs carry arbitrary caller metadata via GET/PATCH /v1/runs/:runId/metadata. Realtime
+    payloads (commands, external data, telemetry) all carry a metadata object naming the
+    user, run_id, run_starttime, procedure_code, procedure_name and procedure_version, so
+    an integration can attribute every request to the procedure step that caused it.
+  custom_fields: >-
+    A first-class Custom Fields API (/v1/fields, /v1/forms) lets a workspace define its
+    own typed fields, which then appear as a details[] array on parts, work orders and
+    other records.
+request_tracing:
+  request_id_header: null
+  note: >-
+    No request-id / correlation header is documented for the REST API. The realtime
+    commanding surface DOES define a correlation_id - its presence is what makes a command
+    asynchronous, and it must be echoed on the command_finished event - but that is an
+    application-level correlation, not HTTP request tracing.
+error_envelope:
+  uniform: false
+  rfc9457: false
+  problem_json: false
+  detail: >-
+    No single documented error envelope. Observed anonymous responses use a bare
+    {"message":"Not Found"} on the API host and {"error":"..."} on the MCP host. The guide
+    documents error STATUS codes per endpoint in prose, not a shared error schema.
+  detail_file: errors/epsilon3-problem-types.yml
+rate_limit_signaling:
+  headers: [RateLimit-Limit, RateLimit-Remaining, RateLimit-Reset]
+  status: 429
+  retry_after: false
+  detail_file: rate-limits/epsilon3-rate-limits.yml
+timestamps:
+  format: ISO-8601
+  reference: https://tc39.es/ecma262/multipage/numbers-and-dates.html#sec-date-time-string-format
+  note: >-
+    ISO-8601 strings throughout, except telemetry multi-value payloads, which use Unix
+    milliseconds integers in values[].timestamp while the single-value form uses an
+    ISO-8601 recorded_at. Both forms are published.
+identifiers:
+  style: mixed
+  detail: >-
+    No uniform ID scheme. Work orders and locations expose small integer ids; parts, runs,
+    procedures and users use 22-character base62-style opaque strings
+    (for example YfsK2SFZ8afndGo2u79ruB); custom field values and project-schedule events
+    use UUIDs; locations additionally carry a prefixed uid (loc_abc123). Callers must
+    treat IDs as opaque per resource family.
+deployment_variants:
+  on_prem: >-
+    On-prem base URL is the customer's own web URL with an /api postfix
+    (https://YOUR_WEB_URL/api), and rate-limit thresholds may differ.
+  regions:
+  - {region: us, api: 'https://api.epsilon3.io', mcp: 'https://mcp.epsilon3.io'}
+  - {region: uk, api: 'https://api.uk.epsilon3.io', mcp: 'https://mcp.uk.epsilon3.io'}
+  - {region: eu, api: null, mcp: 'https://mcp.eu.epsilon3.io'}
+  fedramp: FedRAMP High production is a separate deployment (listed on the status page)
+cross_links:
+  authentication: authentication/epsilon3-authentication.yml
+  scopes: scopes/epsilon3-scopes.yml
+  errors: errors/epsilon3-problem-types.yml
+  rate_limits: rate-limits/epsilon3-rate-limits.yml
+  lifecycle: lifecycle/epsilon3-lifecycle.yml
+  webhooks: asyncapi/epsilon3-realtime-webhooks.yml

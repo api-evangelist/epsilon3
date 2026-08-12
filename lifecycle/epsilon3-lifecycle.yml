@@ -1,0 +1,83 @@
+generated: '2026-08-12'
+method: searched
+source: https://docs.epsilon3.io/
+versioning:
+  scheme: uri-path
+  current: v1
+  also_published: v2
+  docs: https://docs.epsilon3.io/#introduction
+  note: >-
+    v1 and v2 coexist. Roles, Users and a Runs V2 read endpoint are published under /v2
+    while the rest of the surface remains /v1. Epsilon3 publishes no version-support or
+    version-retirement policy, so there is no stated commitment about how long a given
+    version remains callable.
+  build_version_observed: v1.225.2-50b2b039
+  build_version_source: >-
+    window.SERVICE_VERSION in the app.epsilon3.io single-page-app shell, observed
+    2026-08-12. This is the product build, not an API version.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  in_docs: true
+  mechanism: >-
+    Deprecation is announced in the reference itself with an explicit "Deprecated:" notice
+    naming the replacement endpoint and stating the old one "will be removed in a future
+    release". No removal DATE is given, and no RFC 8594 Sunset or Deprecation response
+    header is documented, so a running client gets no runtime warning.
+  note: >-
+    Recorded as a real but informal deprecation practice: Epsilon3 does tell you what is
+    going away and what to use instead, but only in prose, and only if you re-read the
+    docs.
+deprecated_operations:
+- operation: GET /v1/builds/locations
+  section: Locations (deprecated)
+  replacement: GET /v1/settings/locations
+  replacement_note: >-
+    The Settings Locations API provides the same data plus full CRUD (create, update,
+    delete).
+  removal_date: null
+  source: https://docs.epsilon3.io/#locations-deprecated
+status_page:
+  url: https://status.epsilon3.io/
+  provider: Atlassian Statuspage
+  http_status: 200
+  components:
+  - {name: Epsilon3 US production, status: operational}
+  - {name: Epsilon3 UK production, status: operational}
+  - {name: Epsilon3 EU production, status: operational}
+  - {name: Epsilon3 Fedramp production, status: operational}
+  - {name: Epsilon3 Support via Intercom, status: operational}
+  feeds:
+  - https://status.epsilon3.io/history.atom
+  - https://status.epsilon3.io/history.rss
+  observed_uptime: 100.0% over the trailing 90 days on all production components, observed
+    2026-08-12
+sla:
+  url: null
+  uptime_target: null
+  note: >-
+    No public SLA or uptime target is published. Epsilon3 markets 24/7 technical support
+    and onboarding within two weeks of contract signature, but commits to no numeric
+    availability figure on any public page.
+support:
+  human: https://www.epsilon3.io/support
+  help_center: https://support.epsilon3.io/
+  channel: Intercom (listed as a monitored status-page component)
+changelog:
+  url: https://www.epsilon3.io/behind-the-console/category/Changelog
+  cadence: roughly every two to three weeks
+  detail_file: changelog/epsilon3-changelog.yml
+release_channels:
+  regions: [us, uk, eu]
+  fedramp: separate FedRAMP High production deployment
+  on_prem: >-
+    Cloud, on-premises and hybrid deployments are offered on Pro and Enterprise plans;
+    on-prem instances are versioned and rate-limited independently by the customer's own
+    administrator.
+gaps:
+- No deprecation policy page and no removal dates on deprecated endpoints.
+- No Sunset or Deprecation response headers, so deprecation is invisible at runtime.
+- No published API version support window.
+- No public SLA.

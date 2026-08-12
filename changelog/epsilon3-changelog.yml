@@ -1,0 +1,140 @@
+generated: '2026-08-12'
+method: searched
+source: https://www.epsilon3.io/behind-the-console/category/Changelog
+scheme: sequential numbered releases ("Epsilon3 Changelog #N")
+current_release: '103'
+current_release_date: '2026-08-05'
+cadence: every two to three weeks
+history_note: >-
+  Epsilon3 marked its 100th changelog in May 2026 with a "100 Changelogs: Five Years, One
+  Mission" post, so the series runs back to roughly 2021. Only the recent window is
+  captured here; the live category page is the source of truth.
+format: product-wide release notes covering the whole platform, with API changes called
+  out inline rather than in a separate API changelog
+api_changelog_separate: false
+breaking_change_policy: null
+breaking_change_note: >-
+  No breaking-change or deprecation policy is stated in the changelog. Entries are
+  additive announcements; removals surface only as "Deprecated" notices inside the API
+  reference itself (see lifecycle/epsilon3-lifecycle.yml).
+entries:
+- version: '103'
+  date: '2026-08-05'
+  title: Issue Types, Procedure Edits, Performance Improvements, API Expansion, and Financials
+  api_relevant: true
+  highlights: [issue types, procedure edits, performance improvements, API expansion, financials]
+  url: https://www.epsilon3.io/behind-the-console/epsilon3-changelog-103
+- version: '102'
+  date: '2026-06-29'
+  title: Service Work Orders, Dashboard Enhancements, User & Locations APIs, Customize PO
+    Line Item Layouts, & Automations to Notify User Groups & Roles
+  api_relevant: true
+  highlights: [service work orders, Users API, Locations API, purchase-order layouts, automations]
+  url: https://www.epsilon3.io/behind-the-console/epsilon3-changelog-102
+- version: '101'
+  date: '2026-06-08'
+  title: Dashboards, Custom Fields on Procedures, Update Assembly Components in a Run,
+    Pause Reasons, & Optional Strict Signoffs
+  api_relevant: true
+  highlights: [dashboards, custom fields on procedures, assembly components in a run, pause
+      reasons, strict signoffs]
+  url: https://www.epsilon3.io/behind-the-console/epsilon3-changelog-101
+- version: '100'
+  date: '2026-05-26'
+  title: Reference Designators, Custom Layouts for POs and Risks, Skills API, & Duro Design
+    Integration
+  api_relevant: true
+  highlights: [reference designators, Skills API, Duro integration]
+  url: https://www.epsilon3.io/behind-the-console/epsilon3-changelog-100
+- version: '99'
+  date: '2026-05-07'
+  title: Workback Schedules (Automated Planning), More Flexible Work Orders, New Triggers,
+    Conditions, and Actions for Workflows
+  api_relevant: false
+  url: https://www.epsilon3.io/behind-the-console/epsilon3-changelog-99
+- version: '98'
+  date: '2026-04-16'
+  title: Project Schedule Events & Settings, Run Sidebar for Inventory, BOM Header and
+    Content Block, & Import Tools
+  api_relevant: true
+  highlights: [Project Schedule events and settings]
+  url: https://www.epsilon3.io/behind-the-console/epsilon3-changelog-98
+- version: '97'
+  date: '2026-04-03'
+  title: Inventory Kitting, Outbound Shipments, Sales Quotes, User-Specific API Keys, &
+    Login Activity Report
+  api_relevant: true
+  highlights: [outbound shipments API, user-scoped API keys, sales quotes]
+  note: >-
+    This is where user-scoped API keys were introduced alongside the existing team-scoped
+    keys - the split that some endpoints now enforce with a 403.
+  url: https://www.epsilon3.io/behind-the-console/epsilon3-changelog-97-inventory-kitting-outbound-shipments-sales-quotes-user-specific-api-keys-login-activity-report
+- version: '96'
+  date: '2026-03-20'
+  title: Role Based Permissions, Require Skills for Roles, Human Resources, Issues Insights,
+    & Dynamic Item Detail Update
+  api_relevant: true
+  highlights: [role-based permissions, skills required for roles]
+  url: https://www.epsilon3.io/behind-the-console/epsilon3-changelog-96-role-based-permissions-require-skills-for-roles-human-resources-issues-insights-dynamic-item-detail-update
+- version: '95'
+  date: '2026-02-27'
+  title: Import Wizard, Workflows, Procedure Templates, & 3D (CAD) File Viewer
+  api_relevant: false
+  url: https://www.epsilon3.io/behind-the-console/epsilon3-changelog-95-import-wizard-workflows-procedure-templates-3d-cad-file-viewer
+- version: '94'
+  date: '2026-02-12'
+  title: Content Snippets, Default Values for Field Inputs, Default Values for Custom Fields,
+    & Bulk Download Run Summary Attachments
+  api_relevant: true
+  highlights: [snippets, custom-field defaults]
+  url: https://www.epsilon3.io/behind-the-console/epsilon3-changelog-94-content-snippets-default-values-for-field-inputs-default-values-for-custom-fields
+- version: '93'
+  date: '2026-01-22'
+  title: Project Schedules, Acronyms Dictionary, YAMCS commanding, Issue Indicators, More
+    Attachments in Builds
+  api_relevant: true
+  highlights: [project schedules, YAMCS commanding integration, dictionaries]
+  url: https://www.epsilon3.io/behind-the-console/epsilon3-changelog-93-project-schedules-acronyms-dictionary-yamcs-commanding
+- version: '92'
+  date: '2026-01-05'
+  title: Low Inventory Tracking, Section Conditionals & Conditionals with Variables, Sales
+    Orders, External Sharing, Create Personal Notifications, Issues Improvements
+  api_relevant: true
+  highlights: [sale orders, notifications]
+  url: https://www.epsilon3.io/behind-the-console/epsilon3-changelog-92-low-inventory-tracking-section-conditionals-conditionals-with-variables-sales-orders
+- version: '91'
+  date: '2025-12-12'
+  title: User Skills, Trickle Down and Sum Up on Assemblies, Work Order Schedules, Inventory
+    Details Block Improvements
+  api_relevant: true
+  highlights: [user skills, work order schedules]
+  url: https://www.epsilon3.io/behind-the-console/epsilon3changelog-91-user-skills-trickle-down-and-sum-up-on-assemblies-work-order-schedules
+- version: '90'
+  date: '2025-11-20'
+  title: In App Task Tracking, Compare Step Attachments Across Runs, Revert to Prior Procedure
+    Version, Homepage Action Items, Centralized Locations Settings
+  api_relevant: true
+  highlights: [centralized locations settings - the change that deprecated GET /v1/builds/locations]
+  url: https://www.epsilon3.io/behind-the-console/epsilon-changelog-90-tasks-compare-step-attachments-across-runs-revert-to-prior-procedure-version-november-2025
+- version: '89'
+  date: '2025-11-06'
+  title: Pause Step, Prompt to End Run, User Profile Attributes, Nested Work Orders, Reference
+    Stored Files
+  api_relevant: true
+  url: https://www.epsilon3.io/behind-the-console/epsilon3-changelog-89-pause-step-prompt-to-end-run-user-profile-attributes-nested-work-orders-reference-stored-files-november-2025
+- version: '88'
+  date: '2025-10-16'
+  title: Usage Based Maintenance, Print Multiple Runs, Create Child Work Orders & Linked
+    Purchase Orders, Annotate Images during a Run, Scan Codes in Procedure
+  api_relevant: true
+  url: https://www.epsilon3.io/behind-the-console/epsilon3nbsp-changelog-88-usage-based-maintenance-print-multiple-runs-create-child-work-orders-amp-linked-purchase-orders-annotate-images
+- version: '87'
+  date: '2025-10-02'
+  title: Shift Logs, Improved Import PDF-to-Procedure, Bulk Create Custom Fields, Publish
+    Saved Views
+  api_relevant: true
+  highlights: [shift logs - the domain behind the shift_logs:read / shift_logs:write OAuth
+      scopes]
+  url: https://www.epsilon3.io/behind-the-console/epsilon3-changelog-87-shift-logs-bulk-create-custom-fields-publish-saved-views-improved-import-pdf-to-procedure-october-2025
+entry_count: 17
+window: 2025-10-02 to 2026-08-05

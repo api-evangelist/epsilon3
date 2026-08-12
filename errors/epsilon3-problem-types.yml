@@ -1,0 +1,123 @@
+generated: '2026-08-12'
+method: searched
+source: https://docs.epsilon3.io/
+format: none
+format_note: >-
+  Epsilon3 does NOT use RFC 9457 problem+json - the string "problem+json" does not appear
+  in the API Guide and no shared error schema is published. There is no central error
+  reference page either. What follows is every error condition Epsilon3 states explicitly
+  in its endpoint prose, plus the two envelope shapes observed on live anonymous
+  responses. Errors were transcribed from the docs, not derived from a spec - no OpenAPI
+  exists to derive from.
+envelopes:
+- surface: REST API (api.epsilon3.io)
+  shape: '{"message": "<string>"}'
+  observed_on: 'GET https://api.epsilon3.io/mcp -> 404 {"message":"Not Found"}'
+  fields: [message]
+- surface: MCP server (mcp.epsilon3.io)
+  shape: '{"error": "<string>"}'
+  observed_on: >-
+    POST https://mcp.epsilon3.io/ without a token -> 401
+    {"error":"Bearer token required. Authenticate via OAuth or pass an Epsilon3 API key
+    as a Bearer token."}
+  fields: [error]
+- surface: bulk write endpoints
+  shape: partial-success result object
+  detail: >-
+    Several bulk delete/update endpoints return 200 with a body naming what succeeded and
+    an invalid_ids array listing the IDs that were not found, rather than failing the
+    whole request. Callers must inspect the body, not only the status code.
+  fields: [invalid_ids]
+problems:
+- status: 400
+  title: Invalid request or state conflict
+  conditions:
+  - Linking a run that already belongs to a different work order (a run can only be linked
+    to one work order at a time).
+  - Unlinking a run that is not currently linked to the given work order.
+  - Deleting a recurrence series on an event that has no recurrence.
+  - Deleting event assignments whose ids do not all belong to the same event.
+  - Creating an event dependency that would form a cycle, against existing dependencies or
+    against others in the same batch.
+  - Linking a run to a project-schedule event where more than one matching event exists.
+  source_endpoints:
+  - PUT /v1/builds/work-orders/:workOrderId/runs
+  - DELETE /v1/builds/work-orders/:workOrderId/runs/:runId
+  - DELETE /v1/project-schedule/events/:eventId
+  - DELETE /v1/project-schedule/events/assignments
+  - POST /v1/project-schedule/events/dependencies
+  - PUT /v1/project-schedule/events/:eventId/run
+- status: 403
+  title: Forbidden
+  conditions:
+  - Editing a chat message sent by another user - only the original sender can edit.
+  - Deleting a chat message sent by another user - only the original sender can delete.
+  - Retrieving a single project-schedule event the caller cannot access. Note the LIST
+    form deliberately filters inaccessible records instead, returning an empty array.
+  - Calling an endpoint that requires a User API key with a Team API key.
+  source_endpoints:
+  - PATCH /v1/chat/messages/:messageId
+  - DELETE /v1/chat/messages/:messageId
+  - GET /v1/project-schedule/events/:eventId
+- status: 404
+  title: Not found
+  conditions:
+  - The referenced event does not exist.
+  - A non-existent id is supplied to a project-schedule read.
+  - The run to link does not exist, or is not in a project the caller can access - note
+    an inaccessible run is reported as 404, not 403.
+  - The target resource of an update does not exist.
+  source_endpoints:
+  - GET /v1/project-schedule/events/:eventId
+  - PUT /v1/project-schedule/events/:eventId/run
+- status: 409
+  title: Conflict
+  conditions:
+  - Creating a dictionary whose name already exists.
+  - Deleting a dictionary that is still used by existing telemetry parameters, commands or
+    external data.
+  - Deleting a dictionary group that is still used by existing dictionaries.
+  source_endpoints:
+  - POST /v1/dictionaries
+  - DELETE /v1/dictionaries
+  - DELETE /v1/dictionary-groups
+  note: >-
+    These natural-key conflicts are the closest thing Epsilon3 publishes to a safe-retry
+    contract; see conventions/epsilon3-conventions.yml (idempotency is not supported).
+- status: 422
+  title: Unprocessable entity
+  conditions:
+  - The tool maintenance schedule configuration is invalid.
+  - A project-schedule id parameter is supplied without its paired type parameter.
+  source_endpoints:
+  - POST /v1/builds/tools/:toolId/maintenance/schedules
+  - GET /v1/project-schedule/events
+- status: 429
+  title: Too Many Requests
+  conditions:
+  - The 15,000-requests-per-10-minute limit for the API key was exceeded.
+  headers: [RateLimit-Limit, RateLimit-Remaining, RateLimit-Reset]
+  retry_after: false
+  source_endpoints: [all authenticated endpoints]
+  detail_file: rate-limits/epsilon3-rate-limits.yml
+- status: 401
+  title: Unauthorized
+  conditions:
+  - No bearer token presented to the MCP server.
+  - No credentials presented to api.epsilon3.io/v1/mcp.
+  observed: true
+  source_endpoints:
+  - POST https://mcp.epsilon3.io/
+  - POST https://api.epsilon3.io/v1/mcp
+success_codes_documented:
+  note: >-
+    Epsilon3 is unusually explicit about SUCCESS codes - most endpoints state "the
+    response code will be 200/201/204" inline - which partly compensates for the missing
+    error schema.
+  codes: [200, 201, 204]
+gaps:
+- No machine-readable error type, code or identifier - errors are prose-described per
+  endpoint, so an agent cannot branch on a stable error code.
+- No documented error body schema; the two observed envelopes ({"message"} and {"error"})
+  are inconsistent between the REST and MCP surfaces.
+- No documented 500/503 behaviour.

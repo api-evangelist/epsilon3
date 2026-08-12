@@ -1,0 +1,115 @@
+generated: '2026-08-12'
+method: probed
+source: live GET of /.well-known/* on every Epsilon3 host named in apis.yml
+note: >-
+  Five hosts were probed across seven well-known paths. Only ONE document is genuinely
+  served: RFC 8414 OAuth 2.0 Authorization Server Metadata, present on api.epsilon3.io,
+  app.epsilon3.io, api.uk.epsilon3.io and mcp.epsilon3.io. The MCP host additionally
+  serves RFC 9728 OAuth 2.0 Protected Resource Metadata. Every other 200 on the api/app
+  hosts is the single-page-app catch-all returning the same 1,403-byte HTML shell for
+  any unmatched path - recorded below as status 200 with html_shell true and treated as
+  a MISS, not a hit. No security.txt, no OpenID Connect discovery, no api-catalog and no
+  ai-plugin.json are served anywhere.
+hosts_probed:
+- https://www.epsilon3.io
+- https://api.epsilon3.io
+- https://app.epsilon3.io
+- https://docs.epsilon3.io
+- https://api.uk.epsilon3.io
+- https://mcp.epsilon3.io
+documents:
+- host: https://api.epsilon3.io
+  path: /.well-known/oauth-authorization-server
+  status: 200
+  content_type: application/json
+  html_shell: false
+  file: epsilon3-oauth-authorization-server.json
+  spec: RFC 8414
+- host: https://mcp.epsilon3.io
+  path: /.well-known/oauth-authorization-server
+  status: 200
+  content_type: application/json
+  html_shell: false
+  file: epsilon3-mcp-oauth-authorization-server.json
+  spec: RFC 8414
+  note: issuer is https://app.epsilon3.io, not the MCP host itself
+- host: https://mcp.epsilon3.io
+  path: /.well-known/oauth-protected-resource
+  status: 200
+  content_type: application/json
+  html_shell: false
+  file: epsilon3-mcp-oauth-protected-resource.json
+  spec: RFC 9728
+- host: https://api.uk.epsilon3.io
+  path: /.well-known/oauth-authorization-server
+  status: 200
+  content_type: application/json
+  html_shell: false
+  file: null
+  spec: RFC 8414
+  note: >-
+    Identical shape to the US document with issuer https://api.uk.epsilon3.io and the
+    same fifteen scopes; not saved separately because it duplicates the US body.
+- host: https://app.epsilon3.io
+  path: /.well-known/oauth-authorization-server
+  status: 200
+  content_type: application/json
+  html_shell: false
+  file: null
+  note: duplicate of the api.epsilon3.io document
+misses:
+- host: https://www.epsilon3.io
+  paths:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+- host: https://docs.epsilon3.io
+  paths:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+- host: https://api.epsilon3.io
+  note: >-
+    All paths below returned HTTP 200 with content-type text/html and an identical
+    1,403-byte SPA shell body beginning "<!doctype html>". These are catch-all responses,
+    NOT documents. Scored as absent.
+  paths:
+  - {path: /.well-known/security.txt, status: 200, html_shell: true}
+  - {path: /.well-known/openid-configuration, status: 200, html_shell: true}
+  - {path: /.well-known/api-catalog, status: 200, html_shell: true}
+  - {path: /.well-known/ai-plugin.json, status: 200, html_shell: true}
+  - {path: /.well-known/agent-card.json, status: 200, html_shell: true}
+  - {path: /.well-known/agent.json, status: 200, html_shell: true}
+  - {path: /.well-known/oauth-protected-resource, status: 200, html_shell: true}
+- host: https://app.epsilon3.io
+  note: same SPA catch-all shell as api.epsilon3.io
+  paths:
+  - {path: /.well-known/security.txt, status: 200, html_shell: true}
+  - {path: /.well-known/openid-configuration, status: 200, html_shell: true}
+  - {path: /.well-known/api-catalog, status: 200, html_shell: true}
+  - {path: /.well-known/ai-plugin.json, status: 200, html_shell: true}
+  - {path: /.well-known/agent-card.json, status: 200, html_shell: true}
+  - {path: /.well-known/agent.json, status: 200, html_shell: true}
+- host: https://mcp.epsilon3.io
+  note: >-
+    The MCP host returns a JSON 404 that enumerates its own valid sub-paths -
+    "/health, /.well-known/oauth-authorization-server, /.well-known/oauth-protected-resource"
+    - which is itself a useful negative confirmation that no agent card is served.
+  paths:
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+  - {path: /.well-known/mcp.json, status: 404}
+security_txt: false
+agent_card: false
+x-evidence:
+  fetched: '2026-08-12'
+  hit_count: 3
+  distinct_documents: 2

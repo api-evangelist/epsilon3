@@ -1,18 +1,112 @@
 aid: epsilon3
 name: Epsilon3
-description: 'Epsilon3 is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'Epsilon3 is a US-based operations software provider whose platform turns
+  static procedures into live, executable, auditable workflows for high-reliability
+  teams in space, defense, aerospace manufacturing, and energy. The product spans procedure
+  authoring and execution (runs), work orders, parts and inventory, purchase and sale
+  orders, tooling and maintenance, shipments, project schedules, issues, test and requirements
+  management, skills, and telemetry/commanding. Its developer surface is a per-workspace
+  API-key REST API at api.epsilon3.io/v1 documented across roughly twenty API families
+  and 200-plus endpoints, a SocketIO and webhook realtime interface for commanding,
+  external data, notifications and telemetry streaming, and a hosted read-only Model
+  Context Protocol server at mcp.epsilon3.io fronted by OAuth 2.1 with dynamic client
+  registration and fifteen published scopes. Customers include NASA, Blue Origin, Redwire,
+  Axiom Space and AeroVironment; deployment options span multi-tenant cloud, UK and EU
+  regions, on-premises, and FedRAMP High on AWS GovCloud.'
+image: https://static1.squarespace.com/static/602ec1c9965913605a250907/t/666747f4afb0bc6004370ebf/1785952863858/Epsilon3+Logo+2130x1200.jpg?format=1500w
 url: https://raw.githubusercontent.com/api-evangelist/epsilon3/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-12'
 modified: '2026-08-12'
 tags:
 - Company
-apis: []
+- Operations
+- Aerospace
+- Space
+- Defense
+- Manufacturing
+- Procedures
+- Workflow
+- Inventory
+- Telemetry
+- Test Management
+- Project Management
+- MCP
+apis:
+- name: Epsilon3 REST API
+  description: 'REST API for the Epsilon3 operations platform, organized into roughly
+    twenty API families: Builds (work orders, parts, inventory, purchase and sale orders,
+    vendors, tooling, shipments), Chat, Commanding, Custom Fields, Dictionaries, Events,
+    External Data, Files, Issues, Procedures, Project Schedule, Roles, Runs (v1 and
+    v2), Search, Settings, Skills, Snippets, Swimlanes, Telemetry, Test Management,
+    and Users. Resource-oriented URLs, JSON request and response bodies, standard HTTP
+    verbs and status codes, authenticated with a per-workspace API key supplied as the
+    username component of HTTP Basic auth.'
+  humanURL: https://docs.epsilon3.io/
+  baseURL: https://api.epsilon3.io/v1
+  tags:
+  - Operations
+  - Procedures
+  - Inventory
+  - Work Orders
+  - Test Management
+  properties:
+  - type: Documentation
+    url: https://docs.epsilon3.io/
+  - type: APIReference
+    url: https://docs.epsilon3.io/#introduction
+  - type: GettingStarted
+    url: https://support.epsilon3.io/en/articles/8779712-generate-api-key
+  - type: Authentication
+    url: authentication/epsilon3-authentication.yml
+  - type: RateLimits
+    url: rate-limits/epsilon3-rate-limits.yml
+  - type: Conventions
+    url: conventions/epsilon3-conventions.yml
+  - type: ErrorCatalog
+    url: errors/epsilon3-problem-types.yml
+- name: Epsilon3 Realtime API
+  description: 'SocketIO and webhook realtime interface for integrating third-party
+    systems with running Epsilon3 procedures. Four namespaces are published: commanding
+    (/v1/commands/realtime), external data (/v1/external-data/items), notifications
+    (/v1/notifications/realtime) and telemetry (/v1/telemetry/realtime). Webhook deliveries
+    are signed with an Epsilon3-Signature header verified against a per-workspace webhook
+    key. Realtime authentication requires a team-scoped API key.'
+  humanURL: https://docs.epsilon3.io/#realtime-introduction
+  baseURL: https://api.epsilon3.io
+  tags:
+  - Realtime
+  - Webhooks
+  - Telemetry
+  - Commanding
+  properties:
+  - type: Webhooks
+    url: asyncapi/epsilon3-realtime-webhooks.yml
+  - type: Documentation
+    url: https://docs.epsilon3.io/#realtime-introduction
+- name: Epsilon3 MCP Server
+  description: 'Hosted, remote Model Context Protocol server exposing Epsilon3 procedures,
+    runs, parts and inventory, and issues to MCP-capable assistants. Read-only in the
+    current preview: it can search, open, query and trace records but cannot create,
+    edit or delete. Authorization is OAuth 2.1 authorization-code with PKCE S256 and
+    dynamic client registration, with fifteen scopes advertised via RFC 8414 and RFC
+    9728 metadata; an Epsilon3 API key may also be presented as a bearer token. Regional
+    endpoints are published for the UK and EU.'
+  humanURL: https://www.epsilon3.io/behind-the-console/introducing-epsilon3-mcp-preview
+  baseURL: https://mcp.epsilon3.io
+  tags:
+  - MCP
+  - Agents
+  - Search
+  properties:
+  - type: MCPServer
+    url: mcp/epsilon3-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/epsilon3-tool-crosswalk.yml
+  - type: OAuthScopes
+    url: scopes/epsilon3-scopes.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +114,71 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://www.epsilon3.io/
+- type: DeveloperPortal
+  url: https://docs.epsilon3.io/
+- type: Documentation
+  url: https://docs.epsilon3.io/
+- type: APIReference
+  url: https://docs.epsilon3.io/#introduction
+- type: GettingStarted
+  url: https://support.epsilon3.io/en/articles/8779712-generate-api-key
+- type: Support
+  url: https://www.epsilon3.io/support
+- type: HelpCenter
+  url: https://support.epsilon3.io/
+- type: Blog
+  url: https://www.epsilon3.io/behind-the-console
+- type: Pricing
+  url: https://www.epsilon3.io/pricing
+- type: SignUp
+  url: https://app.epsilon3.io/
+- type: TermsOfService
+  url: https://www.epsilon3.io/terms
+- type: PrivacyPolicy
+  url: https://www.epsilon3.io/privacy
+- type: StatusPage
+  url: https://status.epsilon3.io/
+- type: TrustCenter
+  url: security/epsilon3-trust-center.yml
+- type: Compliance
+  url: https://www.epsilon3.io/security
+- type: ChangeLog
+  url: changelog/epsilon3-changelog.yml
+- type: Lifecycle
+  url: lifecycle/epsilon3-lifecycle.yml
+- type: Deprecation
+  url: lifecycle/epsilon3-lifecycle.yml
+- type: Authentication
+  url: authentication/epsilon3-authentication.yml
+- type: OAuthScopes
+  url: scopes/epsilon3-scopes.yml
+- type: Conventions
+  url: conventions/epsilon3-conventions.yml
+- type: RateLimits
+  url: rate-limits/epsilon3-rate-limits.yml
+- type: Plans
+  url: plans/epsilon3-plans-pricing.yml
+- type: ErrorCatalog
+  url: errors/epsilon3-problem-types.yml
+- type: Conformance
+  url: conformance/epsilon3-conformance.yml
+- type: WellKnown
+  url: well-known/epsilon3-well-known.yml
+- type: MCPServer
+  url: mcp/epsilon3-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/epsilon3-tool-crosswalk.yml
+- type: Webhooks
+  url: asyncapi/epsilon3-realtime-webhooks.yml
+- type: LLMsTxt
+  url: llms/epsilon3-llms.txt
+- type: Packages
+  url: packages/epsilon3-packages.yml
+- type: DomainSecurity
+  url: security/epsilon3-domain-security.yml
+x-enrichment:
+  date: '2026-08-12'
+  status: enriched
+  artifacts_added: 20
+  pass: local-v1

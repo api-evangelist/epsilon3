@@ -1,0 +1,149 @@
+generated: '2026-08-12'
+method: derived
+source: mcp/epsilon3-mcp.yml + https://docs.epsilon3.io/ (documented REST endpoint inventory)
+note: >-
+  Epsilon3 publishes NO OpenAPI, so this crosswalk cannot bind tools to operationIds -
+  the normal anchor. It binds instead to the method+path pairs actually printed in the
+  Epsilon3 API Guide, which is the strongest machine-checkable identifier the provider
+  offers. Confidence is set accordingly: the MCP tools/list manifest is auth-gated, so
+  every mapping below is by name and stated semantics, not by an observed inputSchema.
+  Nothing here is invented; every REST path listed appears verbatim in the published docs
+  and every tool name appears verbatim in Epsilon3's MCP launch post.
+surfaces:
+  openapi:
+    present: false
+    note: >-
+      No OpenAPI/Swagger document is served. Probed /openapi.json, /openapi.yaml,
+      /swagger.json on docs.epsilon3.io (404) and on the api/app host roots (200 SPA
+      shell, not a spec). The reference is a single-page Slate-style HTML guide.
+  rest:
+    docs: https://docs.epsilon3.io/
+    base_url: https://api.epsilon3.io/v1
+    documented_endpoints: 209
+    gated: false
+  graphql:
+    present: false
+  mcp:
+    url: https://mcp.epsilon3.io
+    tools_list: gated
+    note: anonymous tools/list returns 401 Bearer token required
+crosswalk:
+- tool: Search
+  category: discovery
+  rest:
+  - POST /v1/search
+  binding: rest
+  confidence: high
+  note: >-
+    The REST Search API covers exactly the resource types the tool advertises and
+    supports resource_type filtering plus cursor pagination.
+- tool: Open
+  category: retrieval
+  rest:
+  - GET /v1/procedures/:procedure-id
+  - GET /v2/runs/:runId
+  - GET /v1/builds/parts/:partId
+  - GET /v1/issues/:issue-id
+  binding: rest
+  confidence: medium
+  note: >-
+    One tool fans out to the single-record GET of each of the four data domains the
+    MCP server exposes. The tool almost certainly dispatches on a record type argument;
+    the exact argument name is not observable while tools/list is gated.
+- tool: Summarize
+  category: aggregation
+  rest:
+  - GET /v1/runs/summary
+  - GET /v1/procedures/summary
+  - GET /v1/issues
+  binding: rest
+  confidence: medium
+  note: >-
+    "What is running and what is open" maps onto the run and procedure summary
+    endpoints plus an open-issue listing; the summarization itself is server-side
+    composition with no single backing operation.
+- tool: Query issues
+  category: query
+  rest:
+  - GET /v1/issues
+  - GET /v1/issues/metadata-options
+  binding: rest
+  confidence: high
+  note: >-
+    The issues list endpoint documents status filtering and linked-entity filtering,
+    which is precisely what the tool describes.
+- tool: Check inventory
+  category: query
+  rest:
+  - GET /v1/builds/inventory
+  - GET /v1/builds/inventory/:itemId
+  - GET /v1/builds/parts
+  binding: rest
+  confidence: high
+  note: lookup by part name, ID or tracking number matches the inventory list filters
+- tool: Find related entity
+  category: traversal
+  rest: []
+  binding: composite
+  confidence: low
+  note: >-
+    No single documented REST operation returns "all directly related entities" for a
+    part, procedure or run. The closest published surfaces are the per-resource activity
+    endpoints and the link endpoints (work-order/run, shipment/run, event/run), so this
+    is treated as a server-side graph traversal composed above REST.
+- tool: WhoAmI
+  category: identity
+  rest:
+  - GET /v2/users/summary
+  binding: rest
+  confidence: low
+  note: >-
+    The users summary endpoint lists workspace users rather than resolving the caller.
+    No documented REST operation returns the authenticated principal, so WhoAmI most
+    likely reads the OAuth token subject directly. Flagged low rather than mapped
+    confidently.
+mcp_only:
+- tool: Find related entity
+  reason: >-
+    Cross-entity relationship traversal has no public REST equivalent; it is composed
+    server-side from link tables the REST API only exposes one edge at a time.
+- tool: WhoAmI
+  reason: >-
+    No public REST "current user" operation is documented; the identity comes from the
+    bearer token rather than an API call.
+rest_only:
+- capability: Builds - work orders, parts, part details, inventory, purchase orders,
+    sale orders, vendors, product catalog, purchase requests, vendor quotes, carriers,
+    customers, sales tax jurisdictions, tools, tool instances, tool maintenance, tool
+    history, shipments, outbound shipments
+  endpoints: 96
+  note: only the read side of parts/inventory is reachable through MCP
+- capability: Runs lifecycle - start, pause, resume, end, tags, metadata, automation
+    start/stop
+  endpoints: 11
+  note: MCP is read-only; runs:start is an advertised OAuth scope but no tool uses it
+- capability: Procedures authoring and audit
+  endpoints: 4
+- capability: Project Schedule - events, activity, assignments, dependencies, run links
+  endpoints: 11
+- capability: Test Management - conditions, hazards, test points, requirements and their
+    version histories
+  endpoints: 17
+- capability: Telemetry and Commanding parameter/command dictionaries
+  endpoints: 11
+- capability: Custom Fields, Forms, Dictionaries, Dictionary Groups, External Data,
+    Snippets, Swimlanes, Settings locations
+  endpoints: 24
+- capability: Chat, Files, Roles, Skills, Users, Events
+  endpoints: 27
+coverage:
+  tools_named: 7
+  tools_bound_to_rest: 5
+  tools_mcp_only: 2
+  rest_operations_documented: 209
+  rest_operations_with_a_tool: 12
+  rest_coverage_percent: 5.7
+  note: >-
+    The MCP surface is a deliberately narrow read-only projection of a much larger REST
+    core - roughly six percent of documented operations are reachable by an agent, and
+    no write path is exposed at all.

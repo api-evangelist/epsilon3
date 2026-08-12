@@ -1,0 +1,104 @@
+generated: '2026-08-12'
+method: searched
+source: https://www.epsilon3.io/pricing
+currency: USD
+model: per-user subscription, billed annually
+plan_count: 3
+api_access_note: >-
+  API and integration access is a PRO-TIER FEATURE. The Basic plan does not include
+  API/integrations, so the entire developer surface documented at docs.epsilon3.io -
+  and by extension the MCP server - is gated behind at least $200/user/month with a ten
+  user minimum, i.e. roughly $24,000/year before an integrator can make a call.
+free_tier:
+  available: false
+  note: Unlimited view-only users are free, but view-only users cannot exercise the API.
+self_service:
+  available: true
+  note: Basic and Pro can be purchased by credit card; Enterprise is sales-led.
+plans:
+- name: Basic
+  price: 100
+  currency: USD
+  unit: per user
+  period: month
+  billing: annual, credit card
+  min_users: 10
+  max_users: 50
+  deployment: [cloud]
+  api_access: false
+  included:
+  - create and run procedures
+  - full as-run history
+  - basic insights
+  - secure cloud
+  - chat and email support
+  - recurring updates
+- name: Pro
+  price: 200
+  currency: USD
+  unit: per user
+  period: month
+  billing: annual, credit card or Net 30
+  min_users: 10
+  max_users: 999
+  deployment: [cloud, on-premises, hybrid]
+  deployment_note: on-premises carries an additional fee
+  api_access: true
+  included:
+  - everything in Basic
+  - API and integrations
+  - planning
+  - workflow automation
+  - AI procedure generation
+  - test and requirements management
+  - issue tracking
+  - risk assessment
+  - inventory management
+  - document management
+  - advanced analytics
+  - anomaly detection
+  - time tracking
+  - shift logs
+  - multiple workspaces
+  - SSO
+  services:
+  - custom implementation
+  - procedure imports
+  - dedicated technical support
+- name: Enterprise
+  price: null
+  price_note: contact sales
+  currency: USD
+  unit: per user
+  period: month
+  billing: annual, credit card or Net 30
+  min_users: 20
+  target: organizations of 1,000+ employees
+  deployment: [cloud, on-premises, hybrid, FedRAMP High]
+  api_access: true
+  included:
+  - everything in Pro
+  - custom integrations
+  services:
+  - everything in Pro
+  - advanced implementation
+  notes: volume and enterprise-wide licensing available
+quotas:
+  api_call_quota_by_plan: null
+  api_call_quota_note: >-
+    Rate limits are published per API key (15,000 requests / 10 minutes) but are NOT
+    differentiated by plan, and no plan carries an API call allowance or overage price.
+    See rate-limits/epsilon3-rate-limits.yml.
+overage: null
+other_channels:
+- channel: AWS Marketplace
+  note: Epsilon3 - Procedure Execution Software [GovCloud] is listed on AWS Marketplace.
+- channel: Carahsoft
+  note: government reseller
+- channel: CDW
+  note: on-premises platform license listed as SKU E3ONPREM, 12-month subscription
+mcp_availability:
+  free: false
+  note: >-
+    The MCP server is an opt-in beta for existing Epsilon3 customers - it is not
+    separately priced and is not available without a platform subscription.

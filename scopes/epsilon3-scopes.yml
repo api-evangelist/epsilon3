@@ -1,0 +1,115 @@
+generated: '2026-08-12'
+method: probed
+source: https://mcp.epsilon3.io/.well-known/oauth-protected-resource
+note: >-
+  Epsilon3 publishes no OpenAPI, so derive-oauth-scopes.py had nothing to read. These
+  fifteen scopes are the verbatim scopes_supported array served by Epsilon3's own RFC
+  8414 authorization-server metadata and RFC 9728 protected-resource metadata. The
+  identical set is advertised on four hosts: mcp.epsilon3.io, api.epsilon3.io,
+  app.epsilon3.io and api.uk.epsilon3.io. No scopes reference page exists in the API
+  Guide, so the DESCRIPTIONS below are read from the scope names and the documented REST
+  surface they correspond to - they are not provider prose.
+docs: null
+docs_gap: >-
+  Epsilon3 documents no scopes/permissions reference page. The only public description
+  of these scopes is the machine-readable metadata itself.
+schemes:
+- name: MCPOAuth
+  source: well-known/epsilon3-mcp-oauth-protected-resource.json
+  resource: https://mcp.epsilon3.io
+  authorization_servers: [https://app.epsilon3.io]
+  bearer_methods_supported: [header]
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://app.epsilon3.io/oauth/authorize
+    tokenUrl: https://app.epsilon3.io/oauth/token
+    registrationUrl: https://app.epsilon3.io/oauth/register
+    code_challenge_methods_supported: [S256]
+- name: PlatformOAuth
+  source: well-known/epsilon3-oauth-authorization-server.json
+  issuer: https://api.epsilon3.io
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://api.epsilon3.io/oauth/authorize
+    tokenUrl: https://api.epsilon3.io/oauth/token
+    registrationUrl: https://api.epsilon3.io/oauth/register
+scope_count: 15
+scopes:
+- scope: procedures:read
+  access: read
+  domain: procedures
+  description: Read procedures and procedure summaries.
+- scope: procedures:comment
+  access: write
+  domain: procedures
+  description: Add comments to a procedure.
+- scope: procedures:draft
+  access: write
+  domain: procedures
+  description: Create or modify draft (unreleased) procedure versions.
+- scope: procedures:signoff
+  access: write
+  domain: procedures
+  description: Sign off procedure steps - the highest-consequence scope in the set,
+    because a signoff is the auditable record that a step was performed correctly.
+- scope: runs:read
+  access: read
+  domain: runs
+  description: Read running and completed procedure runs.
+- scope: runs:comment
+  access: write
+  domain: runs
+  description: Add comments to a run.
+- scope: runs:start
+  access: write
+  domain: runs
+  description: Start a procedure run.
+- scope: issues:read
+  access: read
+  domain: issues
+  description: Read issues and issue metadata options.
+- scope: issues:comment
+  access: write
+  domain: issues
+  description: Add comments to an issue.
+- scope: issues:write
+  access: write
+  domain: issues
+  description: Create and update issues.
+- scope: parts:read
+  access: read
+  domain: builds
+  description: Read parts, part details and inventory.
+- scope: work_orders:read
+  access: read
+  domain: builds
+  description: Read work orders.
+- scope: work_orders:write
+  access: write
+  domain: builds
+  description: Create and update work orders.
+- scope: shift_logs:read
+  access: read
+  domain: operations
+  description: Read shift logs.
+- scope: shift_logs:write
+  access: write
+  domain: operations
+  description: Create and update shift log entries.
+summary:
+  read_scopes: 6
+  write_scopes: 9
+  domains: [procedures, runs, issues, builds, operations]
+  observation: >-
+    Nine write scopes are advertised but the current MCP preview exposes no write tool,
+    so the granted authority of a token materially exceeds what any published client can
+    exercise today. There is no scope covering the large Builds write surface (purchase
+    orders, sale orders, tooling, shipments), Test Management, Project Schedule,
+    Telemetry or Commanding - those remain API-key-only.
+x-evidence:
+  fetched: '2026-08-12'
+  probes:
+  - {url: 'https://mcp.epsilon3.io/.well-known/oauth-protected-resource', http_status: 200}
+  - {url: 'https://mcp.epsilon3.io/.well-known/oauth-authorization-server', http_status: 200}
+  - {url: 'https://api.epsilon3.io/.well-known/oauth-authorization-server', http_status: 200}
+  - {url: 'https://api.uk.epsilon3.io/.well-known/oauth-authorization-server', http_status: 200}

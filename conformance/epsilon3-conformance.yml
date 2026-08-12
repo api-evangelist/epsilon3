@@ -1,0 +1,158 @@
+generated: '2026-08-12'
+method: searched
+source: https://docs.epsilon3.io/ + https://www.epsilon3.io/security + served .well-known metadata
+note: >-
+  Standards conformance below is asserted only where there is direct evidence - a served
+  metadata document, an explicit statement in the API Guide, or a named claim on
+  Epsilon3's own security page. Everything unverified is recorded conforms:false with the
+  reason, not left out.
+standards:
+- id: oauth2
+  conforms: true
+  evidence: >-
+    OAuth 2.0 authorization-code flow served on four hosts with authorize/token/register
+    endpoints; grant_types_supported [authorization_code, refresh_token].
+  source: well-known/epsilon3-oauth-authorization-server.json
+- id: rfc8414-oauth-authorization-server-metadata
+  conforms: true
+  evidence: >-
+    /.well-known/oauth-authorization-server returns a valid JSON metadata document on
+    api.epsilon3.io, app.epsilon3.io, api.uk.epsilon3.io and mcp.epsilon3.io.
+  source: well-known/epsilon3-oauth-authorization-server.json
+- id: rfc9728-oauth-protected-resource-metadata
+  conforms: true
+  evidence: >-
+    mcp.epsilon3.io serves /.well-known/oauth-protected-resource naming the resource, its
+    authorization server, bearer_methods_supported and fifteen scopes.
+  source: well-known/epsilon3-mcp-oauth-protected-resource.json
+- id: rfc7636-pkce
+  conforms: true
+  evidence: code_challenge_methods_supported is ["S256"]; no plain method offered.
+- id: rfc7591-dynamic-client-registration
+  conforms: true
+  evidence: registration_endpoint published at /oauth/register on both the API and app
+    issuers, with token_endpoint_auth_methods_supported ["none"] for public clients.
+- id: oauth2.1
+  conforms: true
+  evidence: >-
+    Authorization code + mandatory PKCE S256, no implicit or password grant advertised,
+    refresh tokens - the OAuth 2.1 profile.
+- id: oidc
+  conforms: false
+  evidence: >-
+    No /.well-known/openid-configuration is served on any host. The www and docs hosts
+    404; the api and app hosts return the SPA HTML shell, which is not a document.
+- id: mcp
+  conforms: true
+  evidence: >-
+    Hosted remote MCP server at mcp.epsilon3.io with JSON-RPC transport, OAuth-protected
+    per the MCP authorization spec, and a /health endpoint reporting version 0.1.0.
+  detail: mcp/epsilon3-mcp.yml
+- id: a2a
+  conforms: false
+  evidence: >-
+    No agent card served. /.well-known/agent-card.json and /.well-known/agent.json 404 on
+    docs and www and on mcp.epsilon3.io; on api and app they return the SPA HTML shell,
+    which is not a card.
+- id: openapi
+  conforms: false
+  evidence: >-
+    No OpenAPI or Swagger document is published. /openapi.json, /openapi.yaml and
+    /swagger.json 404 on docs.epsilon3.io and return the SPA shell on the api/app host
+    roots. The reference is single-page HTML.
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    A real event surface exists (SocketIO namespaces plus signed webhooks) but no AsyncAPI
+    document is published.
+  detail: asyncapi/epsilon3-realtime-webhooks.yml
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    No application/problem+json anywhere; observed error bodies are bare {"message"} on
+    the REST host and {"error"} on the MCP host.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: >-
+    Deprecation is announced only in prose in the reference; no Sunset or Deprecation
+    response header is documented.
+- id: ietf-ratelimit-headers
+  conforms: true
+  evidence: >-
+    RateLimit-Limit, RateLimit-Remaining and RateLimit-Reset are documented as present on
+    every response, matching the unprefixed IETF draft form.
+  gap: no Retry-After on 429
+  detail: rate-limits/epsilon3-rate-limits.yml
+- id: cursor-pagination
+  conforms: true
+  evidence: >-
+    Search API uses an opaque page-token cursor with a pagination.next_page_token /
+    pagination.limit envelope and explicit opacity guidance.
+  gap: only the Search API documents pagination; other collection endpoints do not
+- id: idempotency
+  conforms: false
+  evidence: >-
+    No idempotency key or replay contract is documented anywhere in the API Guide.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt is not served on any Epsilon3 host.
+- id: llms-txt
+  conforms: true
+  evidence: https://www.epsilon3.io/llms.txt returns a 4,279-byte llms.txt document.
+  file: llms/epsilon3-llms.txt
+  gap: >-
+    The llms.txt sits on the marketing host, not the docs host, and points at
+    docs.epsilon3.io as prose rather than linking machine-readable artifacts.
+- id: saml
+  conforms: true
+  evidence: SSO/SAML listed as an available capability on Pro and Enterprise plans.
+  source: https://www.epsilon3.io/security
+compliance_programs:
+  published: true
+  page: https://www.epsilon3.io/security
+  trust_center: https://trust.epsilon3.io/
+  trust_center_provider: Vanta
+  certifications:
+  - id: soc2-type-ii
+    name: SOC 2 Type II
+    claimed: true
+    evidence: '"SOC & SOC 2 Type II Compliance: Ensure security, availability, and confidentiality"'
+  - id: fedramp-high
+    name: FedRAMP High Authorization
+    claimed: true
+    evidence: '"FedRAMP High Authorization: Driving digital transformation within government
+      programs"'
+  - id: nist-800-171
+    name: NIST SP 800-171
+    claimed: true
+    evidence: '"NIST 800-171 Compliance: Protect CUI per DFARS 252.204-7012 and CMMC"'
+  - id: dfars-252.204-7012
+    name: DFARS 252.204-7012
+    claimed: true
+  - id: cmmc
+    name: CMMC
+    claimed: true
+  - id: itar
+    name: ITAR
+    claimed: true
+    evidence: '"ITAR Compliance: Prevent any unauthorized spread of sensitive defense
+      technologies"'
+  - id: ear
+    name: EAR
+    claimed: true
+    evidence: '"Stay compliant with ITAR, NIST, SOC, EAR..."'
+  - id: iso-27001
+    name: ISO 27001
+    claimed: false
+    note: not named on the public security page
+  controls:
+  - TLS 1.3 in transit
+  - AES-256 at rest
+  - Role-Based Access Control
+  - SSO and MFA
+  - one-click audit bundle export
+  - dual-region clouds and offline mode for business continuity
+  hosting: AWS GovCloud
+  ai_posture: >-
+    Epsilon3 states its AI features are opt-in and that its contracts prevent customer
+    data being used for model training.

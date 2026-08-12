@@ -1,0 +1,74 @@
+generated: '2026-08-12'
+method: searched
+source: https://docs.epsilon3.io/#download-sample-client
+registries_searched:
+- {registry: npm, query: epsilon3, result: 0 packages}
+- {registry: pypi, query: epsilon3, result: 404 - no such project}
+- {registry: rubygems, query: epsilon3, result: none}
+- {registry: crates.io, query: epsilon3, result: none}
+- {registry: packagist, query: epsilon3, result: none}
+- {registry: nuget, query: epsilon3, result: none}
+- {registry: maven-central, query: epsilon3, result: none}
+- {registry: pkg.go.dev, query: epsilon3, result: none}
+github_org:
+  found: false
+  note: >-
+    github.com/epsilon3 is an unrelated personal account (Stephen Donald Huff, Capital
+    Ideations LLC). Two empty orgs exist - github.com/epsilon3inc (display name
+    "Epsilon3", 0 public repos) and github.com/epsilon3-ai (0 public repos) - neither of
+    which publishes anything, so no GitHubOrganization pointer is claimed.
+sdk_note: >-
+  Epsilon3 publishes NO client SDK for its 209-endpoint REST API on any package registry.
+  The only first-party distributed code is a pair of downloadable Python SAMPLE CLIENTS
+  for the realtime interface. They are genuinely first-party and are the documented way to
+  connect, but they are starter applications for one surface rather than an SDK for the
+  API, they are not published to PyPI, and they carry no version. No SDKs pointer is
+  emitted in apis.yml on the strength of them.
+packages:
+- language: python
+  registry: direct-download
+  name: client-python-socketio
+  url: https://docs.epsilon3.io/examples/client-python-socketio.tar.gz
+  install: download and unzip the tarball, then `pipenv install && pipenv shell && python app.py`
+  official: true
+  kind: sample-client
+  surface: Epsilon3 Realtime API (SocketIO namespaces for commanding, external data,
+    notifications, telemetry)
+  version: null
+  published: null
+  version_note: >-
+    No registry metadata endpoint exists for a tarball served straight off the docs host,
+    and the URL is UNPINNED - it always floats to whatever build Epsilon3 last uploaded.
+    A consumer cannot tell what version they are getting, and neither can we. The only
+    dating signal is the HTTP Last-Modified header, which read 2026-08-12 when probed
+    (622,532 bytes) - that is a mirror/CDN timestamp, not a release date, so it is
+    recorded here as a probe observation rather than as `published`.
+  http_status: 200
+  content_length: 622532
+  last_modified_observed: '2026-08-12'
+- language: python
+  registry: direct-download
+  name: client-python-webhooks
+  url: https://docs.epsilon3.io/examples/client-python-webhooks.tar.gz
+  install: download and unzip the tarball, then `pipenv install && pipenv shell && flask aiorun`
+  official: true
+  kind: sample-client
+  surface: Epsilon3 Realtime API over signed webhooks
+  bundled_modules:
+  - name: webhook_auth
+    description: verify_webhook_signature(secret, payload, Epsilon3-Signature) -> bool
+  version: null
+  published: null
+  version_note: >-
+    Same unpinned direct-download distribution as the SocketIO client - no registry, no
+    version in the URL, no release feed.
+  http_status: 200
+package_count: 2
+official_sdk_count: 0
+findings:
+- The API is large (209 documented endpoints across ~20 families) and has zero published
+  client libraries in any language on any registry.
+- Both sample clients are unversioned and unpinned, so an integration cannot lock a
+  dependency or detect that the client changed underneath it.
+- There is no public source repository for either client - they exist only as tarballs on
+  the docs host.

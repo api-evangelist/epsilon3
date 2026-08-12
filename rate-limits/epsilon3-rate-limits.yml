@@ -1,0 +1,78 @@
+generated: '2026-08-12'
+method: searched
+source: https://docs.epsilon3.io/#rate-limiting
+limit_count: 3
+note: >-
+  Epsilon3 publishes both the numeric limits AND the runtime response headers, which is
+  the rarer and more useful half. Limits are stated for the REST API and, separately,
+  for telemetry data_update events on the realtime SocketIO namespace.
+limits:
+- id: rest-api
+  scope: per-api-key
+  scope_detail: >-
+    Applied per API key (team or user) for API-authenticated requests, and per user for
+    web-authenticated requests.
+  limit: 15000
+  window: 10 minutes
+  unit: requests
+  burst: null
+  applies_to: https://api.epsilon3.io/v1 (all authenticated endpoints)
+  exhaustion_status: 429
+  exhaustion_body: null
+  source: https://docs.epsilon3.io/#rate-limiting
+- id: telemetry-team
+  scope: per-team
+  limit: 1000
+  window: 1 second
+  unit: data_update events
+  applies_to: SocketIO namespace /v1/telemetry/realtime, across all active streams
+  exhaustion_status: null
+  exhaustion_behavior: >-
+    Excess data_update events are SILENTLY DROPPED - the value is not processed and no
+    error is returned on the emitting call. The drop is reported out-of-band on the
+    telemetry_connection_status event, which includes warnings naming the limit exceeded
+    and how many events were dropped.
+  source: https://docs.epsilon3.io/#rate-limits
+- id: telemetry-stream
+  scope: per-stream
+  scope_detail: applied independently per stream_id
+  limit: 4
+  window: 1 second
+  unit: data_update events
+  applies_to: SocketIO namespace /v1/telemetry/realtime
+  exhaustion_behavior: same silent drop plus telemetry_connection_status warning
+  source: https://docs.epsilon3.io/#rate-limits
+headers:
+  published: true
+  standard: draft-ietf-httpapi-ratelimit-headers (RateLimit-* form, unprefixed)
+  response_headers:
+  - name: RateLimit-Limit
+    description: Maximum number of requests allowed in the current window
+  - name: RateLimit-Remaining
+    description: Number of requests remaining in the current window
+  - name: RateLimit-Reset
+    description: Time in seconds until the current rate limit window resets
+  always_present: true
+  always_present_note: Epsilon3 states these headers are included in EVERY response, not
+    only on 429.
+  retry_after: false
+  retry_after_note: >-
+    No Retry-After header is documented. An agent must compute its backoff from
+    RateLimit-Reset.
+payload_limits:
+- id: telemetry-data-update-size
+  limit: 100KB
+  applies_to: each data_update payload on /v1/telemetry/realtime
+  behavior: payloads exceeding the limit are rejected and not processed; split across
+    multiple data_update events
+  source: https://docs.epsilon3.io/#data-update-event
+- id: command-timeout
+  limit: 18000 seconds (5 hours)
+  applies_to: maximum asynchronous command expiration
+  default: 55 seconds when no correlation_id is supplied (synchronous)
+  source: https://docs.epsilon3.io/#command-timeout
+on_prem:
+  note: >-
+    Epsilon3 states on-premises deployments may have different rate limit thresholds
+    configured by the customer's own administrator, so these figures describe the
+    multi-tenant cloud only.

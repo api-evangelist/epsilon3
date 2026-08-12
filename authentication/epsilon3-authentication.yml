@@ -1,0 +1,103 @@
+generated: '2026-08-12'
+method: searched
+source: https://docs.epsilon3.io/#authentication
+docs: https://support.epsilon3.io/en/articles/8779712-generate-api-key
+note: >-
+  Derived mechanically from OpenAPI was not possible - Epsilon3 publishes no machine
+  readable spec. This profile is transcribed from the published API Guide plus the
+  RFC 8414 / RFC 9728 metadata documents actually served by the API and MCP hosts.
+summary:
+  types: [http, oauth2]
+  http_schemes: [basic]
+  api_key_in: [header]
+  api_key_transport: HTTP Basic username component
+  oauth2_flows: [authorizationCode]
+  oauth2_surface: MCP server only
+schemes:
+- name: ApiKeyBasic
+  type: http
+  scheme: basic
+  applies_to: Epsilon3 REST API (https://api.epsilon3.io/v1)
+  description: >-
+    A per-workspace API key is supplied as the USERNAME component of an HTTP Basic
+    Authorization header with an empty password - curl -u "$EPSILON3_API_KEY": - which
+    the docs demonstrate in curl, Python requests and PowerShell. There is no bearer
+    token, no signed request and no separate secret.
+  source: https://docs.epsilon3.io/#authentication
+  key_scoping:
+  - scope: team
+    note: >-
+      Team-scoped keys are the default and are REQUIRED for realtime (SocketIO/webhook)
+      client authentication - the docs state user-scoped keys will not work there.
+  - scope: user
+    note: >-
+      User-scoped API keys were added in Changelog #97 (2026-04-03) and are issued from
+      User > Profile > API Keys. At least one documented endpoint requires a user key
+      and returns 403 for a team key.
+  key_generation: https://support.epsilon3.io/en/articles/8779712-generate-api-key
+- name: RealtimeWebhookSignature
+  type: signature
+  applies_to: Epsilon3 Realtime API webhooks
+  description: >-
+    Inbound webhook deliveries carry an Epsilon3-Signature header. Epsilon3 ships a
+    python module named webhook_auth exposing verify_webhook_signature(secret, payload,
+    signature) which returns True/False. The signing algorithm is not published; the
+    docs direct integrators to contact Epsilon3 support to verify signatures manually.
+    A webhook key must be registered by Epsilon3 support - it is not self-service.
+  header: Epsilon3-Signature
+  secret_env: EPSILON3_WEBHOOK_KEY
+  algorithm_published: false
+  source: https://docs.epsilon3.io/#webhook-signature-verification
+- name: MCPOAuth
+  type: oauth2
+  applies_to: Epsilon3 MCP Server (https://mcp.epsilon3.io)
+  description: >-
+    The hosted MCP server is protected by OAuth 2.1 authorization-code with PKCE.
+    Public clients only - token_endpoint_auth_methods_supported is ["none"] - and
+    dynamic client registration (RFC 7591) is open, which is what lets an MCP client
+    self-register as a connector. An Epsilon3 API key may alternatively be presented
+    as a bearer token.
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://app.epsilon3.io/oauth/authorize
+    tokenUrl: https://app.epsilon3.io/oauth/token
+    registrationUrl: https://app.epsilon3.io/oauth/register
+    code_challenge_methods_supported: [S256]
+    grant_types_supported: [authorization_code, refresh_token]
+    response_types_supported: [code]
+    token_endpoint_auth_methods_supported: [none]
+    scope_count: 15
+    scopes: scopes/epsilon3-scopes.yml
+  sources:
+  - well-known/epsilon3-mcp-oauth-authorization-server.json
+  - well-known/epsilon3-mcp-oauth-protected-resource.json
+- name: PlatformOAuth
+  type: oauth2
+  applies_to: api.epsilon3.io and api.uk.epsilon3.io
+  description: >-
+    The API hosts serve their own RFC 8414 authorization-server metadata with the same
+    fifteen scopes, issuer-local endpoints, PKCE S256 and open dynamic client
+    registration. This OAuth surface is NOT documented in the API Guide - the guide only
+    describes API-key Basic auth - so it is recorded here from the served metadata, and
+    an integrator should treat it as undocumented until Epsilon3 publishes it.
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://api.epsilon3.io/oauth/authorize
+    tokenUrl: https://api.epsilon3.io/oauth/token
+    registrationUrl: https://api.epsilon3.io/oauth/register
+    code_challenge_methods_supported: [S256]
+    scope_count: 15
+  sources:
+  - well-known/epsilon3-oauth-authorization-server.json
+sso:
+  available: true
+  mechanisms: [SAML, SSO, MFA]
+  tier: Pro and Enterprise plans
+  source: https://www.epsilon3.io/security
+gaps:
+- No OpenID Connect discovery document is served on any host (/.well-known/openid-configuration
+  404s on the docs/www hosts and returns the SPA shell on api/app).
+- The webhook signature algorithm is not published, so signature verification cannot be
+  implemented without contacting support - a real interoperability barrier for any
+  non-Python consumer.
+- The platform-level OAuth surface on api.epsilon3.io is served but undocumented.

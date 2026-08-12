@@ -1,0 +1,173 @@
+generated: '2026-08-12'
+method: searched
+source: https://docs.epsilon3.io/#realtime-introduction
+spec_type: none
+spec_note: >-
+  Epsilon3 publishes NO AsyncAPI document. It does publish a substantial, fully documented
+  event surface - four SocketIO namespaces with named events and payload schemas in prose,
+  plus a signed webhook transport carrying the same payloads. This file captures that
+  catalog verbatim from the docs so the event surface is recorded; it is deliberately NOT
+  written as an AsyncAPI document, because Epsilon3 does not publish one and authoring one
+  would misattribute it to them.
+transports:
+- id: socketio
+  protocol: Socket.IO over WebSocket
+  auth: team-scoped Epsilon3 API key (EPSILON3_API_KEY); user-scoped keys are rejected
+  direction: bidirectional
+  sample_client: https://docs.epsilon3.io/examples/client-python-socketio.tar.gz
+- id: webhooks
+  protocol: HTTPS POST to a customer-hosted endpoint
+  auth: >-
+    Epsilon3-Signature header verified against a per-workspace webhook key
+    (EPSILON3_WEBHOOK_KEY). Registration of the webhook key is not self-service - the docs
+    say to contact Epsilon3 support.
+  signature_header: Epsilon3-Signature
+  signature_algorithm_published: false
+  verification_helper: python module webhook_auth, function verify_webhook_signature
+  sample_client: https://docs.epsilon3.io/examples/client-python-webhooks.tar.gz
+  direction: Epsilon3 -> customer, with a synchronous response body carrying the result
+channels:
+- namespace: /v1/commands/realtime
+  module: Commanding
+  direction: Epsilon3 -> client (request), client -> Epsilon3 (result)
+  events:
+  - name: send_command
+    direction: inbound to client
+    payload_fields:
+    - {field: name, required: true, description: the command name}
+    - {field: dictionary_id, required: false, description: id of the command dictionary;
+        default dictionary when omitted}
+    - {field: arguments, required: false, description: dictionary of command arguments}
+    - {field: operation, required: false, description: name of the operation the run belongs
+        to}
+    - {field: variables, required: false, description: procedure variables and their values}
+    - {field: metadata, required: true, description: user, run_id, run_starttime,
+        procedure_code, procedure_name, procedure_version}
+    - {field: correlation_id, required: false, description: presence makes the command
+        ASYNCHRONOUS and must be echoed on completion}
+  - name: command_finished
+    direction: outbound from client
+    description: >-
+      Completion event for asynchronous commands. Client returns {"status":"executing"}
+      immediately, processes in the background, then emits command_finished with
+      status success|failure|timeout, correlation_id, results and completed_at.
+  semantics:
+    synchronous_default_timeout: 55 seconds
+    max_timeout: 18000 seconds (5 hours)
+    cancellation: not supported except via timeout
+    response_fields: [name, success, received_at, message]
+  related_rest_api: /v1/commands
+- namespace: /v1/external-data/items
+  module: External Data
+  direction: Epsilon3 -> client (query), client -> Epsilon3 (items)
+  events:
+  - name: search
+    direction: inbound to client
+  - name: item
+    direction: inbound to client
+  request_fields:
+  - {field: type, description: External Data Item type to query}
+  - {field: term, description: query search string; an empty term should return all items}
+  - {field: dictionary_id}
+  - {field: metadata, description: user, run_id, run_starttime, procedure_code,
+      procedure_name, procedure_version}
+  response_fields:
+  - {field: type, required: true}
+  - {field: success, required: true}
+  - {field: message, required: false}
+  - {field: items, required: true, description: 'array of {id (required), name (required),
+      label, url, valid, details[{name,value}]}'}
+  related_rest_api: /v1/external-data
+- namespace: /v1/notifications/realtime
+  module: Notifications
+  direction: Epsilon3 -> client
+  events:
+  - name: notification
+    direction: inbound to client
+    ack: 'client returns {"received": true|false}; false or no response renders a failure
+      indicator in the Epsilon3 UI'
+    payload_fields:
+    - {field: id}
+    - {field: type}
+    - {field: subtype}
+    - {field: timestamp, format: ISO-8601}
+    - {field: api_version, type: float}
+    - {field: data, description: message, run_url, section_name, step_name, users_to_notify,
+        remaining_operator_roles, notification_source}
+  subtypes:
+  - at_mention
+  - automation
+  - comment_resolved
+  - issue_assignee
+  - issue_collaborator
+  - issue_updated
+  - operation_assignee
+  - part_reviewers
+  - parts
+  - procedure_generation
+  - procedure_review_comment
+  - procedure_review_complete
+  - remaining_step_operators
+  - reviewers
+  - run_ended
+  - run_started
+  - saved_view_match
+  - skill_expiration
+  - step_completed
+  - suggested_edit
+  - tool
+  - work_order_assignee
+  - work_order_created
+  - workflow
+  subtype_count: 23
+- namespace: /v1/telemetry/realtime
+  module: Telemetry
+  direction: bidirectional streaming
+  transport_note: SocketIO only - the docs describe this namespace for SocketIO clients
+  events:
+  - name: start_stream
+    direction: inbound to client
+    payload_fields: [name, stream_id, refresh_rate, dictionary_id, operation, variables,
+      metadata]
+    defaults: {refresh_rate: 1 second}
+  - name: data_update
+    direction: outbound from client
+    payload_forms:
+    - {form: single, fields: 'stream_id, data{value, recorded_at (ISO-8601)}'}
+    - {form: multiple, fields: 'stream_id, data{values[{timestamp (unix ms), value}]}'}
+    max_payload: 100KB
+    rate_limits: {per_team: 1000/sec, per_stream: 4/sec, behavior: silently dropped and
+        reported on telemetry_connection_status}
+  - name: end_streams
+    direction: inbound to client
+    payload_fields: [stream_ids]
+  - name: disconnect
+    direction: inbound to client
+    description: client should clean up all active streams and reset state
+  - name: error
+    direction: inbound to client
+    description: emitted when issues occur with telemetry streaming
+  - name: telemetry_connection_status
+    direction: inbound to client
+    description: >-
+      diagnostics covering dangling streams that should have been terminated, exceeded
+      rate limits with drop counts, and other connection health information
+  related_rest_api: /v1/telemetry/parameters
+regions:
+  us: https://api.epsilon3.io
+  uk: https://api.uk.epsilon3.io
+  env_var: EPSILON3_API_URL
+summary:
+  namespaces: 4
+  named_events: 13
+  notification_subtypes: 23
+  asyncapi_published: false
+  webhooks_published: true
+  signed: true
+gaps:
+- No AsyncAPI (or any machine-readable event) document, so the event catalog above cannot
+  be consumed programmatically.
+- The webhook signature algorithm is unpublished - a non-Python integrator cannot verify
+  signatures without contacting Epsilon3 support.
+- Webhook key registration is manual and sales/support-mediated, not self-service.
+- No published retry/redelivery policy for webhook deliveries.
