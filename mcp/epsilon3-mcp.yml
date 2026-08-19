@@ -7,9 +7,15 @@ server:
   transport: http
   url: https://mcp.epsilon3.io
   regions:
-  - {region: us, url: 'https://mcp.epsilon3.io', health: 200}
-  - {region: uk, url: 'https://mcp.uk.epsilon3.io', health: 200}
-  - {region: eu, url: 'https://mcp.eu.epsilon3.io', health: 200}
+  - region: us
+    url: https://mcp.epsilon3.io
+    health: 200
+  - region: uk
+    url: https://mcp.uk.epsilon3.io
+    health: 200
+  - region: eu
+    url: https://mcp.eu.epsilon3.io
+    health: 200
   health:
     url: https://mcp.epsilon3.io/health
     status: 200
@@ -18,27 +24,26 @@ server:
   access: opt-in beta for existing Epsilon3 customers
 authorization:
   model: OAuth 2.1 authorization code + PKCE, or an Epsilon3 API key as a bearer token
-  challenge: >-
-    Anonymous POST of {"jsonrpc":"2.0","id":1,"method":"tools/list"} to https://mcp.epsilon3.io
-    returns HTTP 401 with body
-    {"error":"Bearer token required. Authenticate via OAuth or pass an Epsilon3 API key as a Bearer token."}
+  challenge: Anonymous POST of {"jsonrpc":"2.0","id":1,"method":"tools/list"} to https://mcp.epsilon3.io
+    returns HTTP 401 with body {"error":"Bearer token required. Authenticate via OAuth or pass an Epsilon3
+    API key as a Bearer token."}
   protected_resource_metadata: well-known/epsilon3-mcp-oauth-protected-resource.json
   authorization_server_metadata: well-known/epsilon3-mcp-oauth-authorization-server.json
   authorization_servers:
   - https://app.epsilon3.io
-  bearer_methods_supported: [header]
+  bearer_methods_supported:
+  - header
   dynamic_client_registration: true
   registration_endpoint: https://app.epsilon3.io/oauth/register
-  code_challenge_methods_supported: [S256]
+  code_challenge_methods_supported:
+  - S256
   scopes: scopes/epsilon3-scopes.yml
 introspection:
   tools_list: gated
-  note: >-
-    The live tools/list manifest requires an authenticated bearer token, so the real
-    inputSchema for each tool could not be captured. The tool set below is transcribed
-    from Epsilon3's own launch post; names are the provider's wording, and the input
-    contract for each is NOT recorded because it was not observable anonymously.
-    Re-run with a workspace token to capture real schemas.
+  note: The live tools/list manifest requires an authenticated bearer token, so the real inputSchema for
+    each tool could not be captured. The tool set below is transcribed from Epsilon3's own launch post;
+    names are the provider's wording, and the input contract for each is NOT recorded because it was not
+    observable anonymously. Re-run with a workspace token to capture real schemas.
 tools:
 - name: Search
   description: Search across procedures, runs, parts, and issues.
@@ -64,13 +69,11 @@ tools:
 capabilities:
   read: true
   write: false
-  write_note: >-
-    Epsilon3 states the preview is strictly read-only - it "cannot create, edit, or
-    delete anything in Epsilon3" - and that write tools will follow only after testing
-    and guardrails. This is consistent with the scopes actually enforced: although the
-    authorization server advertises write scopes (issues:write, work_orders:write,
-    shift_logs:write, procedures:draft, procedures:signoff, runs:start), no write tool
-    is exposed by the current server.
+  write_note: 'Epsilon3 states the preview is strictly read-only - it "cannot create, edit, or delete
+    anything in Epsilon3" - and that write tools will follow only after testing and guardrails. This is
+    consistent with the scopes actually enforced: although the authorization server advertises write scopes
+    (issues:write, work_orders:write, shift_logs:write, procedures:draft, procedures:signoff, runs:start),
+    no write tool is exposed by the current server.'
 data_domains:
 - procedures
 - runs
@@ -80,10 +83,31 @@ clients_supported: Any MCP-capable assistant; Epsilon3 names Claude and Codex de
 x-evidence:
   fetched: '2026-08-12'
   probes:
-  - {url: 'https://mcp.epsilon3.io/', method: POST, http_status: 401}
-  - {url: 'https://mcp.epsilon3.io/health', method: GET, http_status: 200}
-  - {url: 'https://mcp.epsilon3.io/.well-known/oauth-protected-resource', method: GET, http_status: 200}
-  - {url: 'https://mcp.epsilon3.io/.well-known/oauth-authorization-server', method: GET, http_status: 200}
-  - {url: 'https://mcp.uk.epsilon3.io/health', method: GET, http_status: 200}
-  - {url: 'https://mcp.eu.epsilon3.io/health', method: GET, http_status: 200}
-  - {url: 'https://api.epsilon3.io/v1/mcp', method: POST, http_status: 401}
+  - url: https://mcp.epsilon3.io/
+    method: POST
+    http_status: 401
+  - url: https://mcp.epsilon3.io/health
+    method: GET
+    http_status: 200
+  - url: https://mcp.epsilon3.io/.well-known/oauth-protected-resource
+    method: GET
+    http_status: 200
+  - url: https://mcp.epsilon3.io/.well-known/oauth-authorization-server
+    method: GET
+    http_status: 200
+  - url: https://mcp.uk.epsilon3.io/health
+    method: GET
+    http_status: 200
+  - url: https://mcp.eu.epsilon3.io/health
+    method: GET
+    http_status: 200
+  - url: https://api.epsilon3.io/v1/mcp
+    method: POST
+    http_status: 401
+deployment:
+  mode: remote
+  endpoint: https://mcp.epsilon3.io
+  verified: probed
+  probe: gated
+  checked: '2026-08-12'
+  source: catalog MCP census
