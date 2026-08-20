@@ -22,6 +22,19 @@ created: '2026-08-12'
 modified: '2026-08-12'
 tags:
 - Company
+- Aerospace
+- Space
+- Defense
+- Manufacturing
+- Procedures
+- Workflows
+- Inventory
+- Telemetry
+- Test Management
+- Project Management
+- MCP
+tags_raw:
+- Company
 - Operations
 - Aerospace
 - Space
@@ -47,6 +60,11 @@ apis:
   humanURL: https://docs.epsilon3.io/
   baseURL: https://api.epsilon3.io/v1
   tags:
+  - Procedures
+  - Inventory
+  - Work Orders
+  - Test Management
+  tags_raw:
   - Operations
   - Procedures
   - Inventory
@@ -77,6 +95,11 @@ apis:
   humanURL: https://docs.epsilon3.io/#realtime-introduction
   baseURL: https://api.epsilon3.io
   tags:
+  - Real-Time
+  - Webhook
+  - Telemetry
+  - Commanding
+  tags_raw:
   - Realtime
   - Webhooks
   - Telemetry
