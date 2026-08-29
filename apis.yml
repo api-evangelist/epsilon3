@@ -13,6 +13,17 @@ description: 'Epsilon3 is a US-based operations software provider whose platform
   registration and fifteen published scopes. Customers include NASA, Blue Origin, Redwire,
   Axiom Space and AeroVironment; deployment options span multi-tenant cloud, UK and EU
   regions, on-premises, and FedRAMP High on AWS GovCloud.'
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://static1.squarespace.com/static/602ec1c9965913605a250907/t/666747f4afb0bc6004370ebf/1785952863858/Epsilon3+Logo+2130x1200.jpg?format=1500w
 url: https://raw.githubusercontent.com/api-evangelist/epsilon3/refs/heads/main/apis.yml
 x-type: company
