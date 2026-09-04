@@ -24,6 +24,22 @@ deliveryModel:
   - pricing
   generated: '2026-08-28'
   method: derived
+accessModel:
+  pricing: paid
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Paid · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  - scopes
+  - rate-limits
+  - security
+  generated: '2026-09-02'
+  method: derived
 image: https://static1.squarespace.com/static/602ec1c9965913605a250907/t/666747f4afb0bc6004370ebf/1785952863858/Epsilon3+Logo+2130x1200.jpg?format=1500w
 url: https://raw.githubusercontent.com/api-evangelist/epsilon3/refs/heads/main/apis.yml
 x-type: company
