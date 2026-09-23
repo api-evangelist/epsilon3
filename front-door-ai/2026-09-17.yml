@@ -1,0 +1,29 @@
+# Front Door AI Index — epsilon3 — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: epsilon3
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: www.epsilon3.io
+  final_host: www.epsilon3.io
+  ownership: own
+  owner: epsilon3
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 12
+  host_score: 12
+  density: 6.86
+  words: 1749
+  tiers:
+    agentic: 1
+    core: 11
+    model: 0
+  ambiguous: 6
+  top_terms:
+    AI: 6
+    artificial intelligence: 5
+    intelligence: 5
+    agent: 1
+    agentic: 1
