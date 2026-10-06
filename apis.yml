@@ -46,7 +46,7 @@ x-type: company
 x-source: harvest:secondary-market
 specificationVersion: '0.23'
 created: '2026-08-12'
-modified: '2026-08-12'
+modified: '2026-10-06'
 tags:
 - Company
 - Aerospace
@@ -163,6 +163,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- url: https://www.epsilon3.io/behind-the-console?format=rss
+  type: BlogRSS
 - type: Website
   url: https://www.epsilon3.io/
 - type: DeveloperPortal
