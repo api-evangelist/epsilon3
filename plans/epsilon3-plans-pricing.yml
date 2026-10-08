@@ -102,3 +102,36 @@ mcp_availability:
   note: >-
     The MCP server is an opt-in beta for existing Epsilon3 customers - it is not
     separately priced and is not available without a platform subscription.
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - negotiated
+  - seat
+  units:
+  - seat
+  plans:
+  - name: Basic
+    access: other
+    model: seat
+    model_how: derived
+    units:
+    - seat
+    periods:
+    - month
+  - name: Pro
+    access: other
+    model: seat
+    model_how: derived
+    units:
+    - seat
+    periods:
+    - month
+  - name: Enterprise
+    access: other
+    model: negotiated
+    model_how: derived
+    units:
+    - seat
+    periods:
+    - month
