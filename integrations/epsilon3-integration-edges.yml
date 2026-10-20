@@ -5,22 +5,6 @@ checked:
 - slack/integrations/slack-integration-edges.yml
 marketplace_apps: []
 edges:
-- partner_name: AWS Marketplace
-  partner: amazon-web-services
-  partner_match: aggregator
-  type: marketplace
-  marketplace: aws-marketplace
-  channel: distribution
-  relationship: distribution-channel
-  direction: third-party
-  evidence: https://aws.amazon.com/marketplace/seller-profile?id=seller-krshpihxey7jw
-  listing_count: 2
-  apps:
-  - Epsilon3 - Procedure Execution Software
-  - Epsilon3 - Procedure Execution Software [GovCloud]
-  seller_name: Epsilon3
-  detected_by: sweep-cloud-marketplaces.py
-  detected: '2026-10-13'
 - partner_name: Slack (own)
   partner: slack
   partner_match: mirror
@@ -38,5 +22,21 @@ edges:
   detected: '2026-10-18'
   detected_by: mirror-platform-listings.py
   category: Slack app
+- partner_name: AWS Marketplace
+  partner: amazon-web-services
+  partner_match: aggregator
+  type: marketplace
+  marketplace: aws-marketplace
+  channel: distribution
+  relationship: distribution-channel
+  direction: third-party
+  evidence: https://aws.amazon.com/marketplace/seller-profile?id=seller-krshpihxey7jw
+  listing_count: 2
+  apps:
+  - Epsilon3 - Procedure Execution Software [GovCloud]
+  - Epsilon3 - Procedure Execution Software
+  seller_name: Epsilon3
+  detected_by: sweep-cloud-marketplaces.py
+  detected: '2026-10-13'
 source:
 - slack/integrations/slack-integration-edges.yml
