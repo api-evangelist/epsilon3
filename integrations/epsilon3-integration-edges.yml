@@ -3,6 +3,15 @@ method: searched
 checked:
 - https://aws.amazon.com/marketplace/
 - slack/integrations/slack-integration-edges.yml
+- https://api.data.gov/
+- https://api.data.gov/docs/
+- https://github.com/GSA-TTS/identity-site
+- https://github.com/GSA/api.data.gov/blob/main/content/users.csv
+- https://login.gov/partners/
+- https://marketplace.fedramp.gov/
+- https://marketplace.fedramp.gov/products/
+- https://partners.login.gov/
+- https://www.gsaelibrary.gsa.gov/ElibMain/home.do
 marketplace_apps: []
 edges:
 - partner_name: Slack (own)
@@ -38,5 +47,35 @@ edges:
   seller_name: Epsilon3
   detected_by: sweep-cloud-marketplaces.py
   detected: '2026-10-13'
+- partner_name: GSA Multiple Award Schedule (MAS)
+  partner: null
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://www.gsaelibrary.gsa.gov/ElibMain/contractorInfo.do?contractNumber=47QTCA26D0009&executeQuery=YES
+  category: federal procurement contract vehicle
+  contract_reference:
+    register: GSA eLibrary, Multiple Award Schedule (MAS) IT SIN contractor listings
+    standard: GSA Multiple Award Schedule (IT Large Category)
+    spec_file: null
+    role: gsa-mas-contract-holder
+    registered_name: EPSILON3, INC.
+    register_id: 47QTCA26D0009
+    matched_domain: epsilon3.io
+    matched_by: domain
+    domain_source: web-address
+    sins:
+    - 511210 (software licenses)
+    - 518210C (cloud computing and cloud-related IT professional services)
+    contracts:
+    - 47QTCA26D0009
+    signal_note: 'participation only: a MAS award is a federal contract vehicle (GSA pre-negotiated terms and pricing),
+      not a conformance test. SINs and contract numbers are context, never counted'
+    detected_by: sweep-us-federal-api-programs.py
+    detected: '2026-10-21'
+  detected_by: sweep-us-federal-api-programs.py
+  first_seen: '2026-10-21'
 source:
 - slack/integrations/slack-integration-edges.yml
