@@ -64,40 +64,130 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Epsilon3 is a US-based operations software provider whose platform turns static procedures into
-live, executable, auditable workflows for high-reliability teams in space, defense, aerospace
-manufacturing and energy. Customers named publicly include NASA, Blue Origin, Redwire, Axiom Space
-and AeroVironment.
+Epsilon3 is a US-based operations software provider whose platform turns static procedures into live, executable, auditable workflows for high-reliability teams in space, defense, aerospace manufacturing, and energy. The product spans procedure authoring and execution (runs), work orders, parts and inventory, purchase and sale orders, tooling and maintenance, shipments, project schedules, issues, test and requirements management, skills, and telemetry/commanding. Its developer surface is a per-workspace API-key REST API at api.epsilon3.io/v1 documented across roughly twenty API families and 200-plus endpoints, a SocketIO and webhook realtime interface for commanding, external data, notifications and telemetry streaming, and a hosted read-only Model Context Protocol server at mcp.epsilon3.io fronted by OAuth 2.1 with dynamic client registration and fifteen published scopes. Customers include NASA, Blue Origin, Redwire, Axiom Space and AeroVironment; deployment options span multi-tenant cloud, UK and EU regions, on-premises, and FedRAMP High on AWS GovCloud.
 
-## API surface
+**Areas:** Company · Aerospace · Space · Defense · Manufacturing · Procedures · Workflows · Inventory · Telemetry · Test Management · Project Management · MCP
 
-| Surface | Base URL | Notes |
-|---|---|---|
-| Epsilon3 REST API | `https://api.epsilon3.io/v1` | ~20 API families, 209 documented endpoints |
-| Epsilon3 Realtime API | `https://api.epsilon3.io` | SocketIO namespaces + signed webhooks |
-| Epsilon3 MCP Server | `https://mcp.epsilon3.io` | Hosted, read-only preview, OAuth 2.1 |
+## Epsilon3 on APIs.io
 
-- Documentation: <https://docs.epsilon3.io/>
-- Pricing: <https://www.epsilon3.io/pricing> (API access begins at the Pro tier)
-- Status: <https://status.epsilon3.io/>
-- Changelog: <https://www.epsilon3.io/behind-the-console/category/Changelog>
+Everything profiled for Epsilon3 is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/epsilon3/](https://apis.io/providers/epsilon3/)** — or go straight to one of the APIs or properties below.
 
-## What this profile found
+### APIs (3)
 
-- **No OpenAPI.** The reference is a single-page HTML guide. `/openapi.json`, `/openapi.yaml` and
-  `/swagger.json` were probed on the docs host (404) and on the API and app host roots (HTTP 200
-  returning the single-page-app shell, not a spec).
-- **A real, undocumented OAuth surface.** `/.well-known/oauth-authorization-server` (RFC 8414) is
-  served on four hosts with fifteen scopes, PKCE `S256` and open dynamic client registration, and
-  `mcp.epsilon3.io` additionally serves RFC 9728 protected-resource metadata. None of this appears
-  in the API Guide, which documents only API-key HTTP Basic auth.
-- **A hosted MCP server**, read-only in preview, with regional endpoints for the US, UK and EU.
-  `tools/list` is auth-gated, so the tool set is recorded from Epsilon3's own launch post and the
-  input schemas are marked as requiring authenticated introspection.
-- **A rich event surface with no AsyncAPI** — four SocketIO namespaces, 13 named events, 23
-  notification subtypes, and webhooks signed with an `Epsilon3-Signature` header whose algorithm is
-  not published.
-- **No agent card, no security.txt, no published SDK** on any package registry, and **no
-  idempotency contract** anywhere in the reference.
+- [Epsilon3 REST API](https://apis.io/apis/epsilon3/epsilon3-rest-api/) — REST API for the Epsilon3 operations platform, organized into roughly twenty API families: Builds (work orders, parts, inventory, purchase and sale orders,…
+- [Epsilon3 Realtime API](https://apis.io/apis/epsilon3/epsilon3-realtime-api/) — SocketIO and webhook realtime interface for integrating third-party systems with running Epsilon3 procedures. Four namespaces are published: commanding…
+- [Epsilon3 MCP Server](https://apis.io/apis/epsilon3/epsilon3-mcp-server/) — Hosted, remote Model Context Protocol server exposing Epsilon3 procedures, runs, parts and inventory, and issues to MCP-capable assistants. Read-only in the…
 
-See `apis.yml` for the full artifact index.
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Epsilon3 Realtime Webhooks](https://apis.io/asyncapis/epsilon3/epsilon3-realtime-webhooks/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [epsilon3](https://apis.io/servers/epsilon3/epsilon3/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Epsilon3 Authentication](https://apis.io/security/epsilon3/epsilon3-authentication/)
+- [Epsilon3 Domain Security](https://apis.io/security/epsilon3/epsilon3-domain-security/)
+- [Epsilon3 Trust Center](https://apis.io/security/epsilon3/epsilon3-trust-center/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Epsilon3 Scopes](https://apis.io/scopes/epsilon3/epsilon3-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Epsilon3 Plans Pricing](https://apis.io/plans/epsilon3/epsilon3-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Epsilon3 Rate Limits](https://apis.io/rate-limits/epsilon3/epsilon3-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.epsilon3.io/)
+- [Documentation](https://docs.epsilon3.io/)
+- [Getting started](https://support.epsilon3.io/en/articles/8779712-generate-api-key)
+- [API reference](https://docs.epsilon3.io/#introduction)
+- [Pricing](https://www.epsilon3.io/pricing)
+- [Sign up](https://app.epsilon3.io/)
+- [Support](https://www.epsilon3.io/support)
+- [Blog](https://www.epsilon3.io/behind-the-console)
+- [Compliance](https://www.epsilon3.io/security)
+- [Terms of service](https://www.epsilon3.io/terms)
+- [Privacy policy](https://www.epsilon3.io/privacy)
+- [Status](https://status.epsilon3.io/)
+
+## API Evangelist rating
+
+**Kin Score 60.3** — strong · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 80.0 |
+| Contract quality | 39.0 |
+| Contract governance | 18.2 |
+| Operational transparency | 78.9 |
+| Developer ergonomics | 53.6 |
+| Access clarity | 78.9 |
+
+**Agent readiness 50.0** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 39.2** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/epsilon3/](https://apis.io/providers/epsilon3/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Epsilon3: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/epsilon3/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
